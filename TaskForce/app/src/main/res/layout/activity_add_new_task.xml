@@ -7,57 +7,132 @@
     android:layout_height="match_parent"
     tools:context=".AddNewTask">
 
+    <!-- Titlu task -->
     <EditText
         android:id="@+id/newTaskTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:ems="10"
+        android:layout_marginTop="20dp"
+        android:hint="Task title"
         android:inputType="text"
-        android:text="Task Title"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="12dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Grup -->
     <EditText
         android:id="@+id/newTaskGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:ems="10"
+        android:layout_marginTop="16dp"
+        android:hint="Group"
         android:inputType="text"
-        android:text="Group"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/newTaskTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newTaskTitle" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="304dp" />
-
+    <!-- Detalii -->
     <EditText
         android:id="@+id/newTaskDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Details"
+        android:inputType="textMultiLine"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/newTaskGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- RadioGroup pentru atribuirea taskului -->
+    <RadioGroup
+        android:id="@+id/assignRadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Details"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/newTaskDetails"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newTaskGroup" />
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <RadioButton
+            android:id="@+id/assignMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Atribui pentru mine"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/assignSomeone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Atribui pentru cineva din grup" />
+
+    </RadioGroup>
+
+    <!-- EditText pentru email destinatar -->
+    <EditText
+        android:id="@+id/assignedEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Email destinatar"
+        android:inputType="textEmailAddress"
+        android:visibility="gone"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/assignRadioGroup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- RadioGroup pentru importanta taskului -->
+    <RadioGroup
+        android:id="@+id/importanceRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/assignedEmail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <RadioButton
+            android:id="@+id/importance1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/importance2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2" />
+
+        <RadioButton
+            android:id="@+id/importance3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3" />
+
+        <RadioButton
+            android:id="@+id/importance4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4" />
+
+    </RadioGroup>
+
+    <!-- Buton salvare task -->
     <Button
         android:id="@+id/saveTaskBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save task"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/importanceRadioGroup"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newTaskDetails" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Date;
 import java.util.UUID;
 
 public class Register extends AppCompatActivity {
@@ -38,6 +39,7 @@ public class Register extends AppCompatActivity {
         EditText email = findViewById(R.id.editTextTextEmailAddress2);
         EditText password = findViewById(R.id.editTextTextPassword);
         EditText passwordRetype = findViewById(R.id.editTextTextPassword2);
+        EditText group = findViewById(R.id.editTextGroup);
         Button buttonRegister = findViewById(R.id.buttonRegister);
         TextView goToLogin = findViewById(R.id.textViewGoToLogin);
 
@@ -48,9 +50,10 @@ public class Register extends AppCompatActivity {
             String emailText = email.getText().toString().trim();
             String passwordText = password.getText().toString().trim();
             String passwordRetypeText = passwordRetype.getText().toString().trim();
+            String groupText = group.getText().toString().trim();
 
             // Validation
-            if (emailText.isEmpty() || passwordText.isEmpty() || passwordRetypeText.isEmpty()) {
+            if (emailText.isEmpty() || passwordText.isEmpty() || passwordRetypeText.isEmpty() || groupText.isEmpty()) {
                 Toast.makeText(Register.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -69,15 +72,15 @@ public class Register extends AppCompatActivity {
             String userId = UUID.randomUUID().toString();
 
             // Create User object
-            User user = new User(emailText, passwordText, userId);
+            User user = new User(emailText, passwordText, userId, groupText);
 
             // Save to Firebase
             String userKey = emailText.replace(".", ",");
             usersRef.child(userKey).setValue(user)
                     .addOnSuccessListener(aVoid -> {
                         // Also save to local JSON file
-                        if (saveUserToLocalFile(emailText, passwordText, userId)) {
-                            Toast.makeText(Register.this, "Registration successful! Saved locally.", Toast.LENGTH_SHORT).show();
+                        if (saveUserToLocalFile(emailText, passwordText, userId, groupText)) {
+                            Toast.makeText(Register.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(Register.this, "Registration successful! But local save failed.", Toast.LENGTH_SHORT).show();
                         }
@@ -86,6 +89,7 @@ public class Register extends AppCompatActivity {
                         email.setText("");
                         password.setText("");
                         passwordRetype.setText("");
+                        group.setText("");
 
                         // Go to login
                         Intent intent = new Intent(Register.this, MainActivity.class);
@@ -104,13 +108,24 @@ public class Register extends AppCompatActivity {
         });
     }
 
-    private boolean saveUserToLocalFile(String email, String password, String id) {
+    private boolean saveUserToLocalFile(String email, String password, String id, String groupid) {
         try {
             // Create user JSON object
             JSONObject userJson = new JSONObject();
             userJson.put("mail", email);
             userJson.put("password", password);
             userJson.put("id", id);
+            userJson.put("group", groupid);
+
+            File log = new File(getFilesDir(), "logs.txt");
+            FileOutputStream fos_log = new FileOutputStream(log);
+            OutputStreamWriter osw_log = new OutputStreamWriter(fos_log);
+            Date date = new Date();
+            String current_log = "User with email " + email + " registered at " + date;
+
+            osw_log.write(current_log.toString());
+            osw_log.close();
+            fos_log.close();
 
             // Read existing data from file
             JSONArray usersArray = readExistingUsers();
