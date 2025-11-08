@@ -22,10 +22,8 @@
         android:scaleType="centerInside"
         android:padding="16dp"
         android:layout_gravity="center_vertical"
-        android:backgroundTint="#3B82F6"
         android:elevation="6dp"
-        android:clipToOutline="true"
-        android:src="@android:drawable/ic_menu_info_details" />
+        android:clipToOutline="true"/>
 
     <!-- Card info -->
     <LinearLayout
