@@ -91,11 +91,18 @@
             android:layout_marginBottom="12dp"/>
 
         <!-- Go Back Button -->
+
         <Button
             android:id="@+id/buttonGoBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Go Back"/>
+            android:text="Go Back" />
+
+        <Button
+            android:id="@+id/buttonRemove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove Task" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

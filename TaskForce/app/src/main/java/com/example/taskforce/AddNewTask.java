@@ -11,12 +11,20 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class AddNewTask extends AppCompatActivity {
 
@@ -26,28 +34,29 @@ public class AddNewTask extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_add_new_task);
 
-        EditText taskTitle = (EditText) findViewById(R.id.newTaskTitle);
-        EditText taskGroup = (EditText) findViewById(R.id.newTaskGroup);
-        EditText taskNotes = (EditText) findViewById(R.id.newTaskDetails);
+        EditText taskTitle = findViewById(R.id.newTaskTitle);
+        EditText taskGroup = findViewById(R.id.newTaskGroup);
+        EditText taskNotes = findViewById(R.id.newTaskDetails);
 
-        String connected_email = getIntent().getStringExtra("USER_EMAIL");
-        if(connected_email == null) {
-            connected_email = "TEST";
-        }
-        Log.d(TAG, connected_email);
+        final String connected_email = getIntent().getStringExtra("USER_EMAIL");
+        Log.d(TAG, "Connected email: " + connected_email);
 
         int index = connected_email.lastIndexOf('.');
         String terminatie = connected_email.substring(index + 1, connected_email.length());
 
         final String parse = connected_email.substring(0, index) + ',' + terminatie;
 
-
-        Button saveTask = (Button) findViewById(R.id.saveTaskBtn);
+        Button saveTask = findViewById(R.id.saveTaskBtn);
 
         saveTask.setOnClickListener(v -> {
             String newTaskTitle = taskTitle.getText().toString();
             String newTaskGroup = taskGroup.getText().toString();
             String newTaskNotes = taskNotes.getText().toString();
+
+            if (newTaskTitle.isEmpty()) {
+                Toast.makeText(this, "Please enter task title", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             Task newTask = new Task(
                     newTaskTitle,
@@ -59,18 +68,125 @@ public class AddNewTask extends AppCompatActivity {
                     newTaskNotes
             );
 
-            FirebaseDatabase database =  FirebaseDatabase.getInstance("https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app");
+            boolean jsonSaved = writeTaskToJson(newTask, connected_email);
+            if (jsonSaved) {
+                Log.d(TAG, "Task saved to local JSON file");
+            }
+
+            // Save to Firebase
+            FirebaseDatabase database = FirebaseDatabase.getInstance("https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app");
             DatabaseReference myref = database.getReference("Users").child(parse).child("tasks");
 
             myref.push().setValue(newTask)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(this, "Task salvat cu succes!", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Toast.makeText(this, "Eroare la salvare: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(this, "Task saved successfully!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Task saved to Firebase");
 
-            Intent intent = new Intent(AddNewTask.this, Home.class);
-            startActivity(intent);
-
+                        // Go to Home after successful save
+                        Intent intent = new Intent(AddNewTask.this, Home.class);
+                        intent.putExtra("USER_EMAIL", connected_email);
+                        startActivity(intent);
+                        finish();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Error saving: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "Firebase save error: " + e.getMessage());
+                    });
         });
+    }
+
+    private boolean writeTaskToJson(Task task, String userEmail) {
+        FileOutputStream fos = null;
+        OutputStreamWriter osw = null;
+
+        try {
+            File file = new File(getFilesDir(), "tasks.json");
+
+            JSONObject jsonObject;
+            if (file.exists()) {
+                // Read existing file
+                String existingJson = readExistingJson(file);
+                if (existingJson != null && !existingJson.isEmpty()) {
+                    jsonObject = new JSONObject(existingJson);
+                } else {
+                    jsonObject = new JSONObject();
+                }
+            } else {
+                jsonObject = new JSONObject();
+            }
+
+            JSONArray tasksArray;
+            if (jsonObject.has(userEmail)) {
+                tasksArray = jsonObject.getJSONArray(userEmail);
+            } else {
+                tasksArray = new JSONArray();
+            }
+
+            JSONObject taskJson = new JSONObject();
+            taskJson.put("title", task.title);
+            taskJson.put("author", task.author);
+            taskJson.put("group", task.group);
+            taskJson.put("deadline", task.deadline);
+            taskJson.put("importance", task.importance);
+            taskJson.put("pathToImage", task.pathToImage);
+            taskJson.put("notes", task.notes);
+            taskJson.put("timestamp", System.currentTimeMillis());
+
+            // Add task to array
+            tasksArray.put(taskJson);
 
 
+            jsonObject.put(userEmail, tasksArray);
+
+
+            fos = new FileOutputStream(file);
+            osw = new OutputStreamWriter(fos);
+            osw.write(jsonObject.toString(2));
+            osw.flush();
+
+            Log.d(TAG, "Task successfully written to JSON file for user: " + userEmail);
+            return true;
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error writing task to JSON: " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if (osw != null) osw.close();
+                if (fos != null) fos.close();
+            } catch (Exception e) {
+                Log.e(TAG, "Error closing streams: " + e.getMessage());
+            }
+        }
+    }
+
+    // Helper method to read existing JSON
+    private String readExistingJson(File file) {
+        FileInputStream fis = null;
+        BufferedReader br = null;
+
+        try {
+            fis = new FileInputStream(file);
+            br = new BufferedReader(new InputStreamReader(fis));
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                content.append(line);
+            }
+
+            return content.toString();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error reading existing JSON: " + e.getMessage());
+            return null;
+        } finally {
+            try {
+                if (br != null) br.close();
+                if (fis != null) fis.close();
+            } catch (Exception e) {
+                Log.e(TAG, "Error closing streams: " + e.getMessage());
+            }
+        }
     }
 }
