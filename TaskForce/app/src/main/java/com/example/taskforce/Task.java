@@ -18,7 +18,7 @@ public class Task implements Serializable {
     public Task() {
 
     }
-    public Task(String title, String author, String group, String deadline, int importance, String pathToImage, String notes) {
+    public Task(String title, String author, String deadline, int importance, String pathToImage, String notes) {
         this.title = title;
         this.author = author;
         this.deadline = deadline;

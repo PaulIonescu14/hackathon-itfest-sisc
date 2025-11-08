@@ -1,10 +1,12 @@
 package com.example.taskforce;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -68,11 +71,23 @@ public class Home extends AppCompatActivity {
                     View card = getLayoutInflater().inflate(R.layout.task_card, container, false);
 
                     TextView titluCard = card.findViewById(R.id.TitluCard);
-                    TextView deadlineCard = card.findViewById(R.id.DeadlineCard);
+                    TextView importanceCard = card.findViewById(R.id.ImportanceCard);
+                    ImageView imageCard = card.findViewById(R.id.imageViewCard);
 
                     titluCard.setText(task.title);
-                    deadlineCard.setText(task.deadline != null && !task.deadline.isEmpty()
-                            ? task.deadline : "No deadline");
+                    importanceCard.setText("Importance: " + task.importance);
+                    if(task.importance == 1) {
+                        imageCard.setBackgroundColor(Color.parseColor("#56B894"));
+                    } else if(task.importance == 2) {
+                        imageCard.setBackgroundColor(Color.parseColor("#3B82F6"));
+                    } else if(task.importance == 3) {
+                        imageCard.setBackgroundColor(Color.parseColor("#FBBF24"));
+                    } else if(task.importance == 4) {
+                        imageCard.setBackgroundColor(Color.parseColor("#EF4444"));
+                    } else {
+                        imageCard.setBackgroundColor(Color.parseColor("#D1D5DB"));
+
+                    }
 
                     container.addView(card);
 

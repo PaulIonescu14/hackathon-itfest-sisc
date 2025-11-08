@@ -4,77 +4,81 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F3F4F6"
+    android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/task_stack"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        android:padding="24dp"
-        android:background="@android:color/darker_gray"
+        android:padding="16dp"
+        android:background="#FFFFFF"
+        android:elevation="6dp"
+        android:clipToOutline="true"
+        android:gravity="center_horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Task ID (read-only) -->
-        <TextView
-            android:id="@+id/TaskID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Task ID: id"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:color/white"/>
 
         <!-- Editable Task Title -->
         <EditText
             android:id="@+id/TaskTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:background="@android:color/white"
-            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="#F9FAFB"
+            android:padding="14dp"
             android:textSize="20sp"
             android:hint="Title"
-            android:inputType="text"/>
+            android:textColor="#111827"
+            android:inputType="text"
+            android:gravity="start"/>
 
-        <!-- Read-only fields -->
-        <TextView
-            android:id="@+id/TaskAuthor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Author"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:background="@android:color/white"
-            android:layout_marginBottom="12dp"/>
-
-        <TextView
-            android:id="@+id/TaskGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Group"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:background="@android:color/white"
-            android:layout_marginBottom="12dp"/>
-
-        <!-- Editable Importance -->
-        <EditText
+        <!-- Importance RadioGroup -->
+        <RadioGroup
             android:id="@+id/TaskImportance"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:background="@android:color/white"
-            android:padding="12dp"
-            android:textSize="20sp"
-            android:hint="Importance"
-            android:inputType="text"/>
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:gravity="center_horizontal">
+
+            <RadioButton
+                android:id="@+id/importance1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:checked="true"
+                android:textColor="#111827"
+                android:padding="8dp"/>
+
+            <RadioButton
+                android:id="@+id/importance2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:textColor="#111827"
+                android:padding="8dp"/>
+
+            <RadioButton
+                android:id="@+id/importance3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:textColor="#111827"
+                android:padding="8dp"/>
+
+            <RadioButton
+                android:id="@+id/importance4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4"
+                android:textColor="#111827"
+                android:padding="8dp"/>
+        </RadioGroup>
 
         <!-- Editable Notes -->
         <EditText
@@ -82,27 +86,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Notes"
-            android:textSize="18sp"
-            android:padding="12dp"
-            android:background="@android:color/white"
+            android:textSize="16sp"
+            android:padding="14dp"
+            android:background="#F9FAFB"
             android:inputType="textMultiLine"
             android:minLines="3"
             android:gravity="top"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="24dp"
+            android:textColor="#111827"/>
 
-        <!-- Go Back Button -->
-
-        <Button
-            android:id="@+id/buttonGoBack"
-            android:layout_width="wrap_content"
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Go Back" />
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <Button
-            android:id="@+id/buttonRemove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remove Task" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonGoBack"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Go Back"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="16dp"
+                app:backgroundTint="#3B82F6"
+                android:layout_marginEnd="8dp"
+                android:padding="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonRemove"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Remove Task"
+                android:textColor="#FFFFFF"
+                app:cornerRadius="16dp"
+                app:backgroundTint="#3B82F6"
+                android:layout_marginStart="8dp"
+                android:padding="12dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,7 +37,6 @@ public class AddNewTask extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_task);
 
         EditText taskTitle = findViewById(R.id.newTaskTitle);
-        EditText taskGroup = findViewById(R.id.newTaskGroup);
         EditText taskNotes = findViewById(R.id.newTaskDetails);
         RadioGroup assignGroup = findViewById(R.id.assignRadioGroup);
         EditText assignedEmail = findViewById(R.id.assignedEmail);
@@ -67,7 +66,6 @@ public class AddNewTask extends AppCompatActivity {
 
         saveTask.setOnClickListener(v -> {
             String newTaskTitle = taskTitle.getText().toString();
-            String newTaskGroup = taskGroup.getText().toString();
             String newTaskNotes = taskNotes.getText().toString();
 
             if (newTaskTitle.isEmpty()) {
@@ -98,7 +96,6 @@ public class AddNewTask extends AppCompatActivity {
             Task newTask = new Task(
                     newTaskTitle,
                     assignedToEmailFinal,
-                    newTaskGroup,
                     "",
                     importance,
                     "",
