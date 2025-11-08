@@ -42,7 +42,7 @@ public class TaskDetails extends AppCompatActivity {
 
         Button goBack = findViewById(R.id.buttonGoBack);
         goBack.setOnClickListener(v -> {
-            Intent intent = new Intent(TaskDetails.this, MainActivity.class);
+            Intent intent = new Intent(TaskDetails.this, Home.class);
             startActivity(intent);
             finish();
         });
