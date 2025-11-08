@@ -1,5 +1,6 @@
 package com.example.taskforce;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -40,6 +41,13 @@ public class MainActivity extends AppCompatActivity {
             Log.d("MainActivity", "email: " + emailText);
             Log.d("MainActivity", "password: " + passText);
 
+
+            //TODO: LOGICA DE LOGIC AICI (CU BAZA DE DATE)
+
+            Intent login = new Intent(MainActivity.this, Home.class);
+            login.putExtra("EMAIL", emailText);
+            startActivity(login);
+
         });
 
         togglePass.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -49,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
                 password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             }
         });
+
+        goToRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, Register.class);
+            startActivity(intent);
+        });
+
     }
 
 
