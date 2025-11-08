@@ -2,8 +2,10 @@ package com.example.taskforce;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +23,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextEmail, editTextPassword;
     private Button buttonLogin;
     private TextView textViewRegister;
+
+    private Switch switchPassView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,16 @@ public class MainActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewRegister = findViewById(R.id.textViewGoToRegister);
+        switchPassView = findViewById(R.id.switchPassView);
+
+        switchPassView.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            } else {
+                editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+            editTextPassword.setSelection(editTextPassword.getText().length());
+        });
 
 
 
@@ -62,17 +79,72 @@ public class MainActivity extends AppCompatActivity {
 
             userRef.get().addOnCompleteListener(task -> {
                 DataSnapshot snapshot = task.getResult();
+                String hashedPassword = hashPassword(inputPassword);
 
                 String storedPassword = snapshot.child("password").getValue(String.class);
                 String userId = snapshot.child("id").getValue(String.class);
 
-                if (storedPassword != null && storedPassword.equals(inputPassword)) {
+                if (storedPassword != null && storedPassword.equals(hashedPassword)) {
+                    File log = new File(getFilesDir(), "logs.txt");
+                    FileOutputStream fos_log = null;
+                    try {
+                        fos_log = new FileOutputStream(log, true);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    OutputStreamWriter osw_log = new OutputStreamWriter(fos_log);
+                    Date date = new Date();
+                    String current_log = "\nUser with email " + inputEmail + " logged in successfully at " + date;
+
+                    try {
+                        osw_log.write(current_log);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        osw_log.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        fos_log.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
                     Intent intent = new Intent(MainActivity.this, Home.class);
                     intent.putExtra("USER_EMAIL", inputEmail);
                     intent.putExtra("USER_ID", userId);
                     startActivity(intent);
                     finish();
                 } else {
+                    File log = new File(getFilesDir(), "logs.txt");
+                    FileOutputStream fos_log = null;
+                    try {
+                        fos_log = new FileOutputStream(log, true);
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    OutputStreamWriter osw_log = new OutputStreamWriter(fos_log);
+                    Date date = new Date();
+                    String current_log = "\nSomeone tried to login to " + inputEmail + " but failed - " + date;
+
+                    try {
+                        osw_log.write(current_log);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        osw_log.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        fos_log.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                     Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                 }
 
@@ -84,6 +156,29 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, Register.class);
             startActivity(intent);
         });
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+
+            // Convert byte array to hexadecimal string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Fallback: return a simple hash if SHA-256 fails
+            return String.valueOf(password.hashCode());
+        }
     }
 
     private void readUsersFromJson() {
@@ -124,16 +219,6 @@ public class MainActivity extends AppCompatActivity {
                 if (mail.equals(inputEmail) && password.equals(inputPassword)) {
                     loginSuccessful = true;
                     Toast.makeText(this, "Login successful! Welcome " + mail, Toast.LENGTH_SHORT).show();
-
-                    File log = new File(getFilesDir(), "logs.txt");
-                    FileOutputStream fos_log = new FileOutputStream(log);
-                    OutputStreamWriter osw_log = new OutputStreamWriter(fos_log);
-                    Date date = new Date();
-                    String current_log = "\nUser with email " + inputEmail + " logged in successfully at " + date;
-
-                    osw_log.write(current_log.toString());
-                    osw_log.close();
-                    fos_log.close();
 
                     // Proceed to next activity
                     Intent intent = new Intent(MainActivity.this, Home.class);
@@ -179,5 +264,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
 }

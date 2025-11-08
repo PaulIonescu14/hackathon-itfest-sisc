@@ -5,41 +5,75 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F3F4F6"
     tools:context=".Home">
 
+    <!-- Title -->
+    <TextView
+        android:id="@+id/homeTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Tasks"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:textColor="#111827"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp" />
+
+    <!-- Scrollable Task List -->
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="fill_parent"
-        android:layout_height="670dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="80dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/homeTitle"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="#56B894">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:id="@+id/containerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-        </LinearLayout>
+            android:orientation="vertical"
+            android:divider="?android:attr/dividerVertical"
+            android:showDividers="middle"
+            android:paddingBottom="16dp" />
     </ScrollView>
+
+    <!-- Bottom Bar -->
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:gravity="bottom"
+        android:id="@+id/buttonContainer"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#2563EB"
+        android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintEnd_toEndOf="parent">
+
         <Button
             android:id="@+id/addTaskBtn"
-            android:layout_width="200dp"
+            android:layout_width="220dp"
             android:layout_height="50dp"
-            android:text="Add a new task"
-            android:layout_marginBottom="2dp"
-            android:layout_marginLeft="5dp"
-            />
+            android:text="＋ Add a new task"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="#1E40AF"
+            android:elevation="4dp"
+            android:layout_margin="8dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
