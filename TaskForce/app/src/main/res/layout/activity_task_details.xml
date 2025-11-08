@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/task_stack"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Task ID (read-only) -->
+        <TextView
+            android:id="@+id/TaskID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Task ID: id"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="@android:color/white"/>
+
+        <!-- Editable Task Title -->
+        <EditText
+            android:id="@+id/TaskTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:textSize="20sp"
+            android:hint="Title"
+            android:inputType="text"/>
+
+        <!-- Read-only fields -->
+        <TextView
+            android:id="@+id/TaskAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Author"
+            android:textSize="18sp"
+            android:padding="12dp"
+            android:background="@android:color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/TaskGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Group"
+            android:textSize="18sp"
+            android:padding="12dp"
+            android:background="@android:color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Editable Importance -->
+        <EditText
+            android:id="@+id/TaskImportance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@android:color/white"
+            android:padding="12dp"
+            android:textSize="20sp"
+            android:hint="Importance"
+            android:inputType="text"/>
+
+        <!-- Editable Notes -->
+        <EditText
+            android:id="@+id/TaskNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Notes"
+            android:textSize="18sp"
+            android:padding="12dp"
+            android:background="@android:color/white"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:gravity="top"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Go Back Button -->
+        <Button
+            android:id="@+id/buttonGoBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go Back"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
