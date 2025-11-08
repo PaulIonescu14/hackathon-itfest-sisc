@@ -1,1 +1,1 @@
-# hackathon-itfest-sisc
+# hackathon-itfest-sisc-2025
