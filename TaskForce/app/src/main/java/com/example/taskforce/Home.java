@@ -27,7 +27,7 @@ public class Home extends AppCompatActivity {
 
            View card = getLayoutInflater().inflate(R.layout.task_card, container, false);
 
-            
+
 
 
         }
