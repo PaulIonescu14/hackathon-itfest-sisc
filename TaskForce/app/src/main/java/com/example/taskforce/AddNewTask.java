@@ -1,7 +1,10 @@
 package com.example.taskforce;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -27,7 +30,17 @@ public class AddNewTask extends AppCompatActivity {
         EditText taskGroup = (EditText) findViewById(R.id.newTaskGroup);
         EditText taskNotes = (EditText) findViewById(R.id.newTaskDetails);
 
-        String connected_email = getIntent().getStringExtra("EMAIL");
+        String connected_email = getIntent().getStringExtra("USER_EMAIL");
+        if(connected_email == null) {
+            connected_email = "TEST";
+        }
+        Log.d(TAG, connected_email);
+
+        int index = connected_email.lastIndexOf('.');
+        String terminatie = connected_email.substring(index + 1, connected_email.length());
+
+        final String parse = connected_email.substring(0, index) + ',' + terminatie;
+
 
         Button saveTask = (Button) findViewById(R.id.saveTaskBtn);
 
@@ -47,7 +60,7 @@ public class AddNewTask extends AppCompatActivity {
             );
 
             FirebaseDatabase database =  FirebaseDatabase.getInstance("https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app");
-            DatabaseReference myref = database.getReference("Users").child(connected_email).child("tasks");
+            DatabaseReference myref = database.getReference("Users").child(parse).child("tasks");
 
             myref.push().setValue(newTask)
                     .addOnSuccessListener(aVoid -> Toast.makeText(this, "Task salvat cu succes!", Toast.LENGTH_SHORT).show())

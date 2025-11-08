@@ -26,7 +26,7 @@ public class Home extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        String email = getIntent().getStringExtra("EMAIL");
+        String email = getIntent().getStringExtra("USER_EMAIL");
 
         Button addTask = (Button) findViewById(R.id.addTaskBtn);
 
@@ -69,7 +69,7 @@ public class Home extends AppCompatActivity {
 
         addTask.setOnClickListener(v -> {
             Intent intent = new Intent(Home.this, AddNewTask.class);
-            intent.putExtra("EMAIL", email);
+            intent.putExtra("USER_EMAIL", email);
             startActivity(intent);
         });
 
