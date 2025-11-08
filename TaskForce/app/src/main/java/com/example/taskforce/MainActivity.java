@@ -16,7 +16,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -85,12 +88,22 @@ public class MainActivity extends AppCompatActivity {
                 String id = user.getString("id");
 
                 // Print user info to log (for debugging)
-                System.out.println("User " + i + ": " + mail + " | " + password + " | " + id);
+//                System.out.println("User " + i + ": " + mail + " | " + password + " | " + id);
 
                 // Check if credentials match
                 if (mail.equals(inputEmail) && password.equals(inputPassword)) {
                     loginSuccessful = true;
                     Toast.makeText(this, "Login successful! Welcome " + mail, Toast.LENGTH_SHORT).show();
+
+                    File log = new File(getFilesDir(), "logs.txt");
+                    FileOutputStream fos_log = new FileOutputStream(log);
+                    OutputStreamWriter osw_log = new OutputStreamWriter(fos_log);
+                    Date date = new Date();
+                    String current_log = "\nUser with email " + inputEmail + " logged in successfully at " + date;
+
+                    osw_log.write(current_log.toString());
+                    osw_log.close();
+                    fos_log.close();
 
                     // Proceed to next activity
                     Intent intent = new Intent(MainActivity.this, Home.class);
@@ -104,6 +117,15 @@ public class MainActivity extends AppCompatActivity {
 
             if (!loginSuccessful && !inputEmail.isEmpty() && !inputPassword.isEmpty()) {
                 Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                File log = new File(getFilesDir(), "logs.txt");
+                FileOutputStream fos_log = new FileOutputStream(log, true);
+                OutputStreamWriter osw_log = new OutputStreamWriter(fos_log);
+                Date date = new Date();
+                String current_log = "\nSomeone tried to login with mail " + inputEmail + "but failed - " + date;
+
+                osw_log.write(current_log);
+                osw_log.close();
+                fos_log.close();
             }
 
         } catch (FileNotFoundException e) {

@@ -51,13 +51,17 @@ public class AddNewTask extends AppCompatActivity {
             }
         });
 
+
+
         final String connected_email = getIntent().getStringExtra("USER_EMAIL");
-        Log.d(TAG, "Connected email: " + connected_email);
+
 
         int index = connected_email.lastIndexOf('.');
         String terminatie = connected_email.substring(index + 1, connected_email.length());
 
         final String parse = connected_email.substring(0, index) + ',' + terminatie;
+
+        Log.d(TAG, "Connected email: " + parse);
 
         Button saveTask = findViewById(R.id.saveTaskBtn);
 
@@ -66,33 +70,34 @@ public class AddNewTask extends AppCompatActivity {
             String newTaskGroup = taskGroup.getText().toString();
             String newTaskNotes = taskNotes.getText().toString();
 
-            String taskAssignedTo;
-            if (assignGroup.getCheckedRadioButtonId() == R.id.assignSomeone) {
-                taskAssignedTo = assignedEmail.getText().toString().trim();
-            } else {
-                taskAssignedTo = connected_email; // atribuit pentru mine
-            }
-
             if (newTaskTitle.isEmpty()) {
                 Toast.makeText(this, "Please enter task title", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            final String assignedToEmailFinal; // variabilă finală pentru lambda
+            boolean assignToOther = false;
+            if (assignGroup.getCheckedRadioButtonId() == R.id.assignSomeone) {
+                assignedToEmailFinal = assignedEmail.getText().toString().trim();
+                assignToOther = true;
+                if (assignedToEmailFinal.isEmpty()) {
+                    Toast.makeText(this, "Please enter the email of the user", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else {
+                assignedToEmailFinal = connected_email; // atribuit pentru mine
+            }
 
             int importance = 1;
             int checkedId = importanceGroup.getCheckedRadioButtonId();
-            if (checkedId == R.id.importance1) {
-                importance = 1;
-            } else if (checkedId == R.id.importance2) {
-                importance = 2;
-            } else if (checkedId == R.id.importance3) {
-                importance = 3;
-            } else if (checkedId == R.id.importance4) {
-                importance = 4;
-            }
+            if (checkedId == R.id.importance1) importance = 1;
+            else if (checkedId == R.id.importance2) importance = 2;
+            else if (checkedId == R.id.importance3) importance = 3;
+            else if (checkedId == R.id.importance4) importance = 4;
+
             Task newTask = new Task(
                     newTaskTitle,
-                    "current",
+                    assignedToEmailFinal,
                     newTaskGroup,
                     "",
                     importance,
@@ -100,33 +105,73 @@ public class AddNewTask extends AppCompatActivity {
                     newTaskNotes
             );
 
-            boolean jsonSaved = writeTaskToJson(newTask, connected_email);
-            if (jsonSaved) {
-                Log.d(TAG, "Task saved to local JSON file");
-            }
-
-            // Save to Firebase
             FirebaseDatabase database = FirebaseDatabase.getInstance("https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app");
-            DatabaseReference myref = database.getReference("Users").child(parse).child("tasks");
+            DatabaseReference usersRef = database.getReference("Users");
 
-            myref.push().setValue(newTask)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Task saved successfully!", Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "Task saved to Firebase");
+            if (assignToOther) {
+                // Referința către userul curent
+                DatabaseReference currentUserRef = usersRef.child(parse);
+                // Referința către userul căruia vrem să îi atribuim task-ul
+                DatabaseReference assignedUserRef = usersRef.child(assignedToEmailFinal.replace(".", ","));
 
-                        // Go to Home after successful save
-                        Intent intent = new Intent(AddNewTask.this, Home.class);
-                        intent.putExtra("USER_EMAIL", connected_email);
-                        startActivity(intent);
-                        finish();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Error saving: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e(TAG, "Firebase save error: " + e.getMessage());
+                // Mai întâi luăm grupul userului curent
+                currentUserRef.child("group").get().addOnSuccessListener(currentSnapshot -> {
+                    String currentUserGroupId = currentSnapshot.getValue(String.class);
+
+                    if (currentUserGroupId == null) {
+                        Toast.makeText(this, "Nu s-a putut determina grupul tău curent.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    // Apoi luăm grupul userului asignat
+                    assignedUserRef.get().addOnSuccessListener(assignedSnapshot -> {
+                        if (!assignedSnapshot.exists()) {
+                            Toast.makeText(this, "Userul " + assignedToEmailFinal + " nu există.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        String assignedGroupId = assignedSnapshot.child("group").getValue(String.class);
+
+                        Log.d(TAG, "AssignedGroupID: " + assignedGroupId);
+                        Log.d(TAG, "LoggedUserGroupID: " + currentUserGroupId);
+
+                        if (assignedGroupId == null || !assignedGroupId.equals(currentUserGroupId)) {
+                            Toast.makeText(this, "Userul " + assignedToEmailFinal + " nu face parte din grupul tău.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        // Totul e ok, salvăm task-ul la userul asignat
+                        assignedUserRef.child("tasks")
+                                .push()
+                                .setValue(newTask)
+                                .addOnSuccessListener(aVoid -> {
+                                    Toast.makeText(this, "Task atribuit lui " + assignedToEmailFinal, Toast.LENGTH_SHORT).show();
+                                    finish();
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Eroare la salvarea task-ului: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                });
+
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(this, "Eroare la citirea userului: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
 
-
-
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(this, "Eroare la citirea grupului curent: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+            } else {
+                // Task pentru mine
+                usersRef.child(parse).child("tasks")
+                        .push()
+                        .setValue(newTask)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(this, "Task salvat pentru tine", Toast.LENGTH_SHORT).show();
+                            finish();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(this, "Eroare la salvarea task-ului: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        });
+            }
         });
 
 

@@ -118,10 +118,10 @@ public class Register extends AppCompatActivity {
             userJson.put("group", groupid);
 
             File log = new File(getFilesDir(), "logs.txt");
-            FileOutputStream fos_log = new FileOutputStream(log);
+            FileOutputStream fos_log = new FileOutputStream(log, true);
             OutputStreamWriter osw_log = new OutputStreamWriter(fos_log);
             Date date = new Date();
-            String current_log = "User with email " + email + " registered at " + date;
+            String current_log = "\nUser with email " + email + " registered at " + date;
 
             osw_log.write(current_log.toString());
             osw_log.close();
