@@ -3,6 +3,7 @@ package com.example.taskforce;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,8 +28,13 @@ public class Home extends AppCompatActivity {
 
         String email = getIntent().getStringExtra("EMAIL");
 
+        Button addTask = (Button) findViewById(R.id.addTaskBtn);
+
         LinearLayout container = findViewById(R.id.containerLayout);
 
+
+        FirebaseDatabase database =  FirebaseDatabase.getInstance("https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app");
+        DatabaseReference myref = database.getReference("Users").child("user1").child("tasks");
 
 
 
@@ -60,6 +66,12 @@ public class Home extends AppCompatActivity {
             });
 
         }
+
+        addTask.setOnClickListener(v -> {
+            Intent intent = new Intent(Home.this, AddNewTask.class);
+            intent.putExtra("EMAIL", email);
+            startActivity(intent);
+        });
 
 
 
