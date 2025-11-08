@@ -9,6 +9,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,17 +41,43 @@ public class MainActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.buttonLogin);
         textViewRegister = findViewById(R.id.textViewGoToRegister);
 
-        buttonLogin.setOnClickListener(v -> {
-            // Check if db.json exists
-            File f = new File(getFilesDir(), "db.json");
 
-            if (!f.exists()) {
-                Toast.makeText(MainActivity.this, "Please create an account first", Toast.LENGTH_SHORT).show();
+
+        buttonLogin.setOnClickListener(v -> {
+
+            String inputEmail = editTextEmail.getText().toString().trim();
+            String inputPassword = editTextPassword.getText().toString().trim();
+
+            if (inputEmail.isEmpty() || inputPassword.isEmpty()) {
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Read and process the JSON file
-            readUsersFromJson();
+            String firebaseEmailKey = inputEmail.replace(".", ",");
+
+            FirebaseDatabase database = FirebaseDatabase.getInstance(
+                    "https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app"
+            );
+            DatabaseReference userRef = database.getReference("Users").child(firebaseEmailKey);
+
+            userRef.get().addOnCompleteListener(task -> {
+                DataSnapshot snapshot = task.getResult();
+
+                String storedPassword = snapshot.child("password").getValue(String.class);
+                String userId = snapshot.child("id").getValue(String.class);
+
+                if (storedPassword != null && storedPassword.equals(inputPassword)) {
+                    Intent intent = new Intent(MainActivity.this, Home.class);
+                    intent.putExtra("USER_EMAIL", inputEmail);
+                    intent.putExtra("USER_ID", userId);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                }
+
+            });
+
         });
 
         textViewRegister.setOnClickListener(v -> {
