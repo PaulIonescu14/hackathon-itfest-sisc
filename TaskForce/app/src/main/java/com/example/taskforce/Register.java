@@ -24,5 +24,7 @@ public class Register extends AppCompatActivity {
             Intent intent = new Intent(Register.this, MainActivity.class);
             startActivity(intent);
         });
+
+
     }
 }

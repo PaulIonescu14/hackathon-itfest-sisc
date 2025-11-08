@@ -1,6 +1,7 @@
 package com.example.taskforce;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,12 +24,12 @@ public class Home extends AppCompatActivity {
         LinearLayout container = findViewById(R.id.containerLayout);
 
         for(int i = 0; i < 10; i++) {
-            TextView tv = new TextView(this);
-            tv.setText("Numarul +" + i);
-            tv.setTextSize(18);
-            tv.setPadding(0, 50, 0, 50);
 
-            container.addView(tv);
+           View card = getLayoutInflater().inflate(R.layout.task_card, container, false);
+
+
+
+
         }
 
     }

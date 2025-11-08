@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="#56B894"
+    android:gravity="center_vertical">
+
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@color/black"
+        />
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:background="#FFFF"
+        android:layout_marginLeft="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/TitluCard"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="Titlu Task"
+            android:padding="10dp"/>
+
+        <TextView
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:text="Deadline"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
