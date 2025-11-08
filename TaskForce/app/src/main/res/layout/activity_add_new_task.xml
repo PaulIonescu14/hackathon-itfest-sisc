@@ -10,7 +10,6 @@
     android:background="#F3F4F6"
     tools:context=".AddNewTask">
 
-    <!-- Titlu task -->
     <EditText
         android:id="@+id/newTaskTitle"
         android:layout_width="0dp"
@@ -29,7 +28,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <!-- Detalii -->
     <EditText
         android:id="@+id/newTaskDetails"
         android:layout_width="0dp"
@@ -48,7 +46,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RadioGroup pentru atribuirea taskului -->
     <RadioGroup
         android:id="@+id/assignRadioGroup"
         android:layout_width="wrap_content"
@@ -78,7 +75,6 @@
 
     </RadioGroup>
 
-    <!-- EditText pentru email destinatar -->
     <EditText
         android:id="@+id/assignedEmail"
         android:layout_width="0dp"
@@ -97,7 +93,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RadioGroup pentru importanta taskului -->
     <RadioGroup
         android:id="@+id/importanceRadioGroup"
         android:layout_width="wrap_content"
@@ -143,14 +138,13 @@
 
     </RadioGroup>
 
-    <!-- Buton salvare task -->
     <Button
         android:id="@+id/saveTaskBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Save task"
-        android:backgroundTint="#10B981"
+        android:backgroundTint="#3B82F6"
         android:textColor="#FFFFFF"
         android:textAllCaps="false"
         android:padding="14dp"

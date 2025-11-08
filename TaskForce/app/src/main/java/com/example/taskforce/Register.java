@@ -100,12 +100,10 @@ public class Register extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Email already registered
                     buttonRegister.setEnabled(true);
                     buttonRegister.setText("Register");
                     Toast.makeText(Register.this, "This email is already registered. Please use a different email or login.", Toast.LENGTH_LONG).show();
                 } else {
-                    // Email is available, proceed with registration
                     registerNewUser(emailText, passwordText, groupText);
                 }
             }
@@ -126,27 +124,22 @@ public class Register extends AppCompatActivity {
         String hashedPassword = hashPassword(passwordText);
         String userId = UUID.randomUUID().toString();
 
-        // Create User object
         User user = new User(emailText, hashedPassword, userId, groupText);
 
         // Save to Firebase
         String userKey = emailText.replace(".", ",");
         usersRef.child(userKey).setValue(user)
                 .addOnSuccessListener(aVoid -> {
-                    // Also save to local JSON file
                     if (saveUserToLocalFile(emailText, hashedPassword, userId, groupText)) {
                         Toast.makeText(Register.this, "Registration successful!", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(Register.this, "Registration successful! But local save failed.", Toast.LENGTH_SHORT).show();
                     }
 
-                    // Log the registration
                     logRegistration(emailText, true, null);
 
-                    // Clear fields
                     clearFormFields();
 
-                    // Go to login
                     Intent intent = new Intent(Register.this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -196,31 +189,25 @@ public class Register extends AppCompatActivity {
 
     private boolean saveUserToLocalFile(String email, String password, String id, String groupid) {
         try {
-            // Create user JSON object
             JSONObject userJson = new JSONObject();
             userJson.put("mail", email);
             userJson.put("password", password);
             userJson.put("id", id);
             userJson.put("group", groupid);
 
-            // Read existing data from file
             JSONArray usersArray = readExistingUsers();
 
-            // Check if email already exists in local file (for consistency)
             for (int i = 0; i < usersArray.length(); i++) {
                 JSONObject existingUser = usersArray.getJSONObject(i);
                 String existingEmail = existingUser.getString("mail");
                 if (existingEmail.equals(email)) {
-                    // Remove the existing entry to avoid duplicates
                     usersArray.remove(i);
                     break;
                 }
             }
 
-            // Add new user to the array
             usersArray.put(userJson);
 
-            // Write back to file
             File file = new File(getFilesDir(), DB_FILE_NAME);
             FileOutputStream fos = new FileOutputStream(file);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
