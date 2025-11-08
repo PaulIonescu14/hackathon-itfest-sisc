@@ -12,6 +12,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.w3c.dom.Text;
 
 public class Home extends AppCompatActivity {
@@ -26,20 +29,33 @@ public class Home extends AppCompatActivity {
 
         LinearLayout container = findViewById(R.id.containerLayout);
 
-        for(int i = 0; i < 10; i++) {
 
-           View card = getLayoutInflater().inflate(R.layout.task_card, container, false);
+
+
+
+        Task[] tasks = new Task[3];
+
+        tasks[0] = new Task("ABCBASBDSA", "Eu", "323CA", "Azi", 1, "", "Detalii");
+        tasks[1] = new Task("dsadsadada", "Tu", "313CA", "Maine", 2, "", "Alte detalii");
+        tasks[2] = new Task("dslkdaslkfnslkd", "El", "999CC", "grdg", 7, "", "dsasdadsa");
+
+        for(int i = 0; i < tasks.length; i++) {
+
+            View card = getLayoutInflater().inflate(R.layout.task_card, container, false);
 
             TextView titluCard = (TextView) card.findViewById(R.id.TitluCard);
             TextView deadlineCard = (TextView) card.findViewById(R.id.DeadlineCard);
 
-            titluCard.setText("Asta e cardul :" + i);
-            deadlineCard.setText("MAine");
+            titluCard.setText(tasks[i].title);
+            deadlineCard.setText(tasks[i].deadline);
 
             container.addView(card);
 
+            final Task currentTask = tasks[i];
+
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(Home.this, TaskDetails.class);
+                intent.putExtra("task_object", currentTask);
                 startActivity(intent);
             });
 

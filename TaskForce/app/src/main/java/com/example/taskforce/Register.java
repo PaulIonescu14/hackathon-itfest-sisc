@@ -10,6 +10,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class Register extends AppCompatActivity {
 
     @Override
@@ -19,6 +22,10 @@ public class Register extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         TextView goToLogin = (TextView) findViewById(R.id.textViewGoToLogin);
+
+        FirebaseDatabase database =  FirebaseDatabase.getInstance("https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app");
+        DatabaseReference myref = database.getReference("Users");
+        myref.child("user1").setValue("pparola1");
 
         goToLogin.setOnClickListener(v -> {
             Intent intent = new Intent(Register.this, MainActivity.class);

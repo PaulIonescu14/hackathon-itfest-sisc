@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1008546958281",
+    "firebase_url": "https://taskforce-21df9-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "taskforce-21df9",
+    "storage_bucket": "taskforce-21df9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008546958281:android:6a8cd83e3f6150ec8e7618",
+        "android_client_info": {
+          "package_name": "com.example.taskforce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZoB0_5Udq0awkNg7HxCY6wKHcyoUf0Ns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
