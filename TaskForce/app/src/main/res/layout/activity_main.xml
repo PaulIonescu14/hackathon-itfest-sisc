@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/buttonLogin"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switchPassView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -55,7 +55,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewForgotPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Forgot password?"
@@ -66,7 +66,7 @@
         app:layout_constraintVertical_bias="0.13999999" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textViewGoToRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Don't have an account? Click here"
